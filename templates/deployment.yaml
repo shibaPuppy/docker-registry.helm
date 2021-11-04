@@ -157,20 +157,21 @@ spec:
                   key: swiftPassword
             - name: REGISTRY_STORAGE_SWIFT_CONTAINER
               value: {{ required ".Values.swift.container is required" .Values.swift.container }}
-{{- end }}
-{{- if .Values.proxy.enabled }}
-            - name: REGISTRY_PROXY_REMOTEURL
-              value: {{ required ".Values.proxy.remoteurl is required" .Values.proxy.remoteurl }}
-            - name: REGISTRY_PROXY_USERNAME
+            - name: REGISTRY_STORAGE_SWIFT_TENANT
               valueFrom:
                 secretKeyRef:
-                  name: {{ if .Values.proxy.secretRef }}{{ .Values.proxy.secretRef }}{{ else }}{{ template "docker-registry.fullname" . }}-secret{{ end }}
-                  key: proxyUsername
-            - name: REGISTRY_PROXY_PASSWORD
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: swiftTenant
+            - name: REGISTRY_STORAGE_SWIFT_DOMAIN
               valueFrom:
                 secretKeyRef:
-                  name: {{ if .Values.proxy.secretRef }}{{ .Values.proxy.secretRef }}{{ else }}{{ template "docker-registry.fullname" . }}-secret{{ end }}
-                  key: proxyPassword
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: swiftUserDomain
+            - name: REGISTRY_STORAGE_SWIFT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: swiftRegion
 {{- end }}
 {{- if .Values.persistence.deleteEnabled }}
             - name: REGISTRY_STORAGE_DELETE_ENABLED
